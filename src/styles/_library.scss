@@ -7,8 +7,16 @@
   background: white;
   box-shadow: 2px 2px 50px rgb(204, 204, 204);
   overflow: scroll;
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: all 0.5s ease;
 
   h2 {
     padding: 2rem;
   }
+}
+
+.open {
+  transform: translate(0%);
+  opacity: 1;
 }
