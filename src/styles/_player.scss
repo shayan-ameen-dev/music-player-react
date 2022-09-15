@@ -31,6 +31,8 @@
         }
         &::-moz-range-thumb {
           appearance: none;
+          background: transparent;
+          border: none;
           width: 16px;
           height: 16px;
         }
