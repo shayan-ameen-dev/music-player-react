@@ -10,6 +10,7 @@ const Player = ({
   songInfo,
   isPlaying,
   playSongHandler,
+  skipHandler,
   dragHandler,
   formatTime,
 }) => {
@@ -27,8 +28,13 @@ const Player = ({
         <p>{formatTime(songInfo.duration)}</p>
       </div>
       <div className='play-controls'>
-        {/* Skip Back Icon */}
-        <FontAwesomeIcon className='skip-back' size='2x' icon={faAngleLeft} />
+        {/* Skip Backward Icon */}
+        <FontAwesomeIcon
+          onClick={() => skipHandler('backward')}
+          className='skip-backward'
+          size='2x'
+          icon={faAngleLeft}
+        />
         {/* Play Icon */}
         <FontAwesomeIcon
           onClick={playSongHandler}
@@ -38,6 +44,7 @@ const Player = ({
         />
         {/* Skip Forward Icon */}
         <FontAwesomeIcon
+          onClick={() => skipHandler('forward')}
           className='skip-forward'
           size='2x'
           icon={faAngleRight}

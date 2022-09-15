@@ -9,9 +9,8 @@ import './styles/app.scss';
 
 import data from './data';
 
-function App() {
+const App = () => {
   const [songs, setSongs] = useState(data());
-  const [currentSong, setCurrentSong] = useState(songs[0]);
   const [songInfo, setSongInfo] = useState({
     currentTime: 0,
     duration: 0,
@@ -28,6 +27,58 @@ function App() {
       audioRef.current.pause();
     }
     setIsPlaying(!isPlaying);
+  }
+
+  function skipHandler(direction) {
+    const currentSong = fetchCurrentSong(songs);
+    const currentIndex = songs.indexOf(currentSong);
+
+    if (direction === 'forward') {
+      const nextIndex = currentIndex + 1;
+      if (nextIndex !== songs.length) {
+        selectSongHandler(songs[nextIndex]);
+      } else {
+        selectSongHandler(songs[0]);
+      }
+      // another solution
+      // setCurrentSong(songs[nextIndex % songs.length]);
+    }
+
+    if (direction === 'backward') {
+      const prevIndex = currentIndex - 1;
+      if (prevIndex !== -1) {
+        selectSongHandler(songs[prevIndex]);
+      } else {
+        selectSongHandler(songs[songs.length - 1]);
+      }
+    }
+  }
+
+  function selectSongHandler(song) {
+    const newSongs = songs.map((mapedSong) => {
+      if (mapedSong.id === song.id) {
+        return {
+          ...mapedSong,
+          active: true,
+        };
+      } else {
+        return {
+          ...mapedSong,
+          active: false,
+        };
+      }
+    });
+
+    setSongs(newSongs);
+
+    if (isPlaying) {
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          audioRef.current.play();
+        });
+      }
+    }
   }
 
   function timeUpdateHandler(event) {
@@ -55,33 +106,35 @@ function App() {
     }
   }
 
+  function fetchCurrentSong(songs) {
+    return songs.filter((song) => song.active)[0];
+  }
+
   return (
     <div className='app'>
       <Nav isLibraryOpen={isLibraryOpen} setIsLibraryOpen={setIsLibraryOpen} />
-      <Song currentSong={currentSong} />
+      <Song currentSong={fetchCurrentSong(songs)} />
       <Player
         songInfo={songInfo}
         isPlaying={isPlaying}
         playSongHandler={playSongHandler}
+        skipHandler={skipHandler}
         dragHandler={dragHandler}
         formatTime={formatTime}
       />
       <Library
         songs={songs}
-        setSongs={setSongs}
-        setCurrentSong={setCurrentSong}
-        isPlaying={isPlaying}
         isLibraryOpen={isLibraryOpen}
-        audioRef={audioRef}
+        selectSongHandler={selectSongHandler}
       />
       <audio
         onLoadedMetadata={timeUpdateHandler}
         onTimeUpdate={timeUpdateHandler}
         ref={audioRef}
-        src={currentSong.audio}
+        src={fetchCurrentSong(songs).audio}
       ></audio>
     </div>
   );
-}
+};
 
 export default App;
