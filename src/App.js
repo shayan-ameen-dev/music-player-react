@@ -73,12 +73,9 @@ const App = () => {
     setSongs(newSongs);
 
     if (isPlaying) {
-      const playPromise = audioRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          audioRef.current.play();
-        });
-      }
+      setTimeout(() => {
+        audioRef.current.play();
+      }, 150);
     }
   }
 
@@ -99,6 +96,10 @@ const App = () => {
     setSongInfo({ ...songInfo, currentTime });
   }
 
+  function songEndedHandler() {
+    skipHandler('forward');
+  }
+
   function formatTime(time) {
     if (isNaN(time)) {
       return '0:00';
@@ -114,7 +115,7 @@ const App = () => {
   }
 
   return (
-    <div className='app'>
+    <div className={`app ${isLibraryOpen ? 'library-active' : ''}`}>
       <Nav isLibraryOpen={isLibraryOpen} setIsLibraryOpen={setIsLibraryOpen} />
       <Song currentSong={fetchCurrentSong(songs)} />
       <Player
@@ -134,6 +135,7 @@ const App = () => {
       <audio
         onLoadedMetadata={timeUpdateHandler}
         onTimeUpdate={timeUpdateHandler}
+        onEnded={songEndedHandler}
         ref={audioRef}
         src={fetchCurrentSong(songs).audio}
       ></audio>
