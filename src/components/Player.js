@@ -9,6 +9,7 @@ import {
 const Player = ({
   songInfo,
   isPlaying,
+  currentSong,
   playSongHandler,
   skipHandler,
   dragHandler,
@@ -18,13 +19,26 @@ const Player = ({
     <div className='player'>
       <div className='time-controls'>
         <p>{formatTime(songInfo.currentTime)}</p>
-        <input
-          onChange={dragHandler}
-          value={songInfo.currentTime}
-          min={0}
-          max={songInfo.duration || 0}
-          type='range'
-        />
+        <div
+          style={{
+            background: `linear-gradient(to right, ${currentSong.colors[0]}, ${currentSong.colors[1]})`,
+          }}
+          className='track'
+        >
+          <input
+            onChange={dragHandler}
+            value={songInfo.currentTime}
+            min={0}
+            max={songInfo.duration || 0}
+            type='range'
+          />
+          <div
+            style={{
+              transform: `translateX(${songInfo.animationPercentage}%)`,
+            }}
+            className='animate-track'
+          ></div>
+        </div>
         <p>{formatTime(songInfo.duration)}</p>
       </div>
       <div className='play-controls'>

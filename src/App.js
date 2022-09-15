@@ -14,6 +14,7 @@ const App = () => {
   const [songInfo, setSongInfo] = useState({
     currentTime: 0,
     duration: 0,
+    animationPercentage: 0,
   });
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
@@ -83,10 +84,12 @@ const App = () => {
 
   function timeUpdateHandler(event) {
     const { currentTime, duration } = event.target;
+    const animationPercentage = (currentTime / duration) * 100;
     setSongInfo({
       ...songInfo,
       currentTime,
       duration,
+      animationPercentage,
     });
   }
 
@@ -117,6 +120,7 @@ const App = () => {
       <Player
         songInfo={songInfo}
         isPlaying={isPlaying}
+        currentSong={fetchCurrentSong(songs)}
         playSongHandler={playSongHandler}
         skipHandler={skipHandler}
         dragHandler={dragHandler}
